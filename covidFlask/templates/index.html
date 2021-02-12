@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- Rij 1 -->
+<div class="row">
+    <div class="col-3 mt-3">
+        <div class="card bg-info text-white">
+            <div class="card-header">
+                <b>Rapportage laatste datum</b>
+            </div>
+            <div class="card-body">
+                <div class="card-title">
+                    <h3><b>{{ rap_laatste[0]["reported"] }}</b></h3>
+                </div>
+            </div>
+            <div class="card-footer">
+                <i>{{ laatste_dat }}</i>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-3 mt-3">
+        <div class="card bg-success text-white">
+            <div class="card-header">
+                <b>Totaal gerapporteerd</b>
+            </div>
+            <div class="card-body">
+                <div class="card-title">
+                    <h3><b>{{ totaal_rap[0]["reported"] }}</b></h3>
+                </div>
+            </div>
+            <div class="card-footer">
+                <i>{{ eerste_dat }} - {{ laatste_dat }}</i>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-3 mt-3">
+        <div class="card bg-warning text-white">
+            <div class="card-header">
+                <b>Totaal opgenomen</b>
+            </div>
+            <div class="card-body">
+                <div class="card-title">
+                    <h3><b>{{ totaal_rap[0]["opnames"] }}</b></h3>
+                </div>
+            </div>
+            <div class="card-footer">
+                <i>{{ eerste_dat }} - {{ laatste_dat }}</i>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-3 mt-3">
+        <div class="card bg-danger text-white">
+            <div class="card-header">
+                <b>Totaal overleden</b>
+            </div>
+            <div class="card-body">
+                <div class="card-title">
+                    <h3><b>{{ totaal_rap[0]["overleden"] }}</b></h3>
+                </div>
+            </div>
+            <div class="card-footer">
+                <i>{{ eerste_dat }} - {{ laatste_dat }}</i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Rij 2 -->
+<!-- <div class="row"> -->
+    <!-- <div class="col-4 mt-3"> -->
+        <!-- <div class="card bg-primary text-white"> -->
+            <!-- <div class="card-header"> -->
+                <!-- <b>Header</b> -->
+            <!-- </div> -->
+            <!-- <div class="card-body"> -->
+                <!-- <div class="card-title"> -->
+                    <!-- Een Card 1 (danger) -->
+                <!-- </div> -->
+            <!-- </div> -->
+            <!-- <div class="card-footer"> -->
+                <!-- Footer -->
+            <!-- </div> -->
+        <!-- </div> -->
+    <!-- </div> -->
+<!-- </div> -->
+
+{% endblock %}

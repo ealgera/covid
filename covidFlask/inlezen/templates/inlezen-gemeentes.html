@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="mt-4">
+
+    <div class="card bg-info text-white mb-3">
+        <div class="card-body">
+            <h2 class="card-title">Inlezen Gemeente Data</h2>
+        </div>
+    </div>
+
+    <div>
+        <h5>Haal CSV bestand met dagelijkse COVID-cijfers per gemeente.</h5>
+    </div>
+
+    <form method="POST" class="form" role="form" action="{{url_for('inlezen_bp.inlezen_gemeentes')}}">
+        
+        <br>
+        <div class="form-group row">
+            <div class="col-2">
+                {{ form.laatst_verwerkt.label }}
+            </div>
+            <div class="col-10">
+                {{ form.laatst_verwerkt.data }}
+            </div>
+        </div>
+
+        <div class="form-check">
+            {{ form.dry_run(class_="form-check-input") }}
+            {{ form.dry_run.label(class_="form-check-label") }}
+        </div>
+
+        <br>
+        {{ form.submit(class_="btn btn-primary") }}
+    </form>
+
+    {% if is_verwerkt %}
+        <br>
+        <div class="form-group row">
+            <div class="col-2">
+                Laatste datum:
+            </div>
+            <div class="col-10">
+                {{ laatst_verwerkt_dat }}
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-2">
+                Aantal Provincies:
+            </div>
+            <div class="col-10">
+                {{ aantallen["provincies"] }}
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-2">
+                Aantal Gemeentes:
+            </div>
+            <div class="col-10">
+                {{ aantallen["gemeentes"] }}
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-2">
+                Aantallen
+            </div>
+            <div class="col-2">
+                Gerapporteerd
+            </div>
+            <div class="col-2">
+                Opgenomen
+            </div>
+            <div class="col-2">
+                Overleden
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-2">
+                .
+            </div>
+            <div class="col-2">
+                {{ aantallen["gerapporteerd"] }}
+            </div>
+            <div class="col-2">
+                {{ aantallen["opnames"] }}
+            </div>
+            <div class="col-2">
+                {{ aantallen["overleden"] }}
+            </div>
+        </div>
+        
+    {% endif %}
+
+    <br> <hr>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                {% if category == "error" %}
+                    <div class="alert alert-danger">
+                        {{ message }}
+                    </div>
+                {% endif %}
+                {% if category == "info" %}
+                    <div class="alert alert-info">
+                        {{ message }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+</div>
+
+{% endblock %}

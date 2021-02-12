@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if feedback["error"] %}
+    <div class="alert alert-danger" role="alert">
+        {% for item in feedback["error"] %}
+            <p> {{ item }} </p>
+        {% endfor %}
+    </div>
+{% endif %}
+{% if feedback["warning"] %}
+    <div class="alert alert-warning" role="warning">
+        {% for item in feedback["warning"] %}
+            <p> {{ item }} </p>
+        {% endfor %}
+    </div>
+{% endif %}
+
+{% if is_verwerkt %}
+
+    <form method="POST" action="{{ url_for('inlezen_bp.verwerk_ingelezen_transacties') }}">
+        <div class="card bg-success text-white mt-3">
+            <div class="card-body">
+                <h2 class="card-title">Resultaat inlezen</h2>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-2">
+                            Rekening:
+                        </div>
+                        <div class="col-3">
+                            {{verslag["rekening"]}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-2">
+                            Verwerkt:
+                        </div>
+                        <div class="col-2">
+                            {{verslag["verwerkt"]}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-2">
+                            Overgeslagen:
+                        </div>
+                        <div class="col-2">
+                            {{verslag["overgeslagen"]}}
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-2">
+                            Periode Van:
+                        </div>
+                        <div class="col-2">
+                            {{verslag["periode_van"]}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-2">
+                            Periode Tot/Met:
+                        </div>
+                        <div class="col-2">
+                            {{verslag["periode_tm"]}}
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-2">
+                            Bedrag In:
+                        </div>
+                        <div class="col-2">
+                            {{ verslag["bedrag_in"] | currencyFormat }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-2">
+                            Bedrag Uit:
+                        </div>
+                        <div class="col-2">
+                            {{verslag["bedrag_uit"]}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-2">
+                            Bedrag Totaal:
+                        </div>
+                        <div class="col-2">
+                            {{verslag["bedrag_tot"]}}
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-2">
+                            Posten
+                        </div>
+                        <div class="col-2">
+                            
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-2">
+                            Te koppelen:
+                        </div>
+                        <div class="col-2">
+                            {{verslag["gekoppeld"]}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-2">
+                            Niet te koppelen:
+                        </div>
+                        <div class="col-2">
+                            {{verslag["niet_gekoppeld"]}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if saldo_verplicht %}
+            <div class="form-group mt-3">
+                <label for="saldo" class="form-label">Saldo van Rekening {{ verslag["rekening"] }} op datum {{ verslag['periode_van'] }}</label>
+                <input class="form-control" type="text" name="saldo" placeholder="Voer het Startsaldo in van de rekening waarin wordt geimporteerd" value="">
+            </div>
+        {% endif %}
+
+        <div class="row mt-5">
+            <div class="col">
+                <button type="submit" class="btn btn-outline-danger btn-block" name="form_btn" value="verwerken">Verwerk ingelezen Transacties</button>
+            </div>
+            <div class="col">
+                <button type="submit" class="btn btn-outline-info btn-block" name="form_btn" value="afbreken">Afbreken</button>
+            </div>
+        </div>
+
+    </form>
+
+{% endif %}
+
+
+{% endblock %}
