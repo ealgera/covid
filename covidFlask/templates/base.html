@@ -52,6 +52,16 @@
 
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Grafieken
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="{{ url_for('grafieken_bp.grafieken_gemeentes') }}">Grafieken per Provincie/Gemeente</a>
+                            <a class="dropdown-item" href="{{ url_for('grafieken_bp.grafieken_casuslandelijk') }}">Grafieken Casus Landelijk</a>
+                        </div>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Inlezen
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">

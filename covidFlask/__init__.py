@@ -23,11 +23,13 @@ def create_app(config_file="settings.py"):
         from .algemeen  import algemeen
         from .gegevens  import gegevens
         from .inlezen   import inlezen
+        from .grafieken import grafieken
 
         # Register Blueprints
         app.register_blueprint(algemeen)
         app.register_blueprint(inlezen.inlezen_bp)
         app.register_blueprint(gegevens.gegevens_bp)
+        app.register_blueprint(grafieken.grafieken_bp)
 
         #print(f"APP: {app.url_map}")
 

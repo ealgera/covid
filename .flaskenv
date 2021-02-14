@@ -1,0 +1,3 @@
+FLASK_APP=covidFlask
+FLASK_DEBUG=True
+FLASK_ENV=Development
