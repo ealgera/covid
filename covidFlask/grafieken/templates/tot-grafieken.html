@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="mt-4">
+
+    <div class="card bg-info text-white mb-3">
+        <div class="card-body">
+            <h2 class="card-title">Totalen per Provincies en Gemeenten</h2>
+        </div>
+    </div>
+
+    <div>
+        <h5>COVID-19 Gegevens per ...</h5>
+    </div>
+
+    <br>
+    <form method="POST" class="form" role="form" action="">
+        {{ form.csrf_token }}
+        <div class="form-group row">
+            <div class="col-2">
+                {{ form.prov_sel.label }}
+            </div>
+            <div class="col-2">
+                {{ form.prov_sel }}
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-2 mt-2">
+                {{ form.dat_vanaf.label }}
+            </div>
+            <div class="col-2">
+                {{ form.dat_vanaf (class_="form-control") }}
+            </div>
+            <div class="col-2 text-right mt-2">
+                {{ form.dat_tm.label }}
+            </div>
+            <div class="col-2">
+                {{ form.dat_tm (class_="form-control") }}
+            </div>
+        </div>
+
+        <div class="form-check">
+            {{ form.gemniveau(class_="form-check-input") }}
+            {{ form.gemniveau.label(class_="form-check-label") }}
+        </div>
+
+        <br>
+        <div>
+            {{ form.submit(class_="btn btn-primary") }}
+        </div>
+    </form>
+
+    {% if gevonden %}
+        <center>
+            <canvas id="myChart" width="1000" height="600"></canvas>
+            
+            <p id="caption">Totaal per {{ type }}</p>
+        </center>
+
+        <script>
+            // Global parameters:
+            // do not resize the chart canvas when its container does (keep at 600x400px)
+            Chart.defaults.global.responsive = false;
+
+            // define the chart data
+            var chartData = {
+                labels : [{% for item in labels %}
+                            "{{item}}",
+                            {% endfor %}],
+                datasets : [{
+                    label: '{{ legenda }}',
+                    fill: true,
+                    lineTension: 0.1,
+                    backgroundColor: "rgba(75,192,192,0.4)",
+                    borderColor: "rgba(75,192,192,1)",
+                    borderCapStyle: 'butt',
+                    borderDash: [],
+                    borderDashOffset: 0.0,
+                    borderJoinStyle: 'miter',
+                    pointBorderColor: "rgba(75,192,192,1)",
+                    pointBackgroundColor: "#fff",
+                    pointBorderWidth: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: "rgba(75,192,192,1)",
+                    pointHoverBorderColor: "rgba(220,220,220,1)",
+                    pointHoverBorderWidth: 2,
+                    pointRadius: 1,
+                    pointHitRadius: 10,
+                    data : [{% for item in values %}
+                                {{item}},
+                            {% endfor %}],
+                    spanGaps: false
+                }]
+            }
+
+            // get chart canvas
+            var ctx = document.getElementById("myChart").getContext("2d");
+            
+            // create the chart using the chart canvas
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: chartData,
+            });
+        </script>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
