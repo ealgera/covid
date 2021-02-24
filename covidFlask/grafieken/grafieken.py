@@ -102,6 +102,21 @@ def datum_grafieken():
             print(f"DATUM KLOPT...")
             dat_van = datetime.combine(form.dat_vanaf.data, datetime.min.time()) # Date naar DateTime conversie
             dat_tot = datetime.combine(form.dat_tm.data, datetime.min.time())    # Date naar DateTime conversie
+
+            # Provincie: Alles     -> alleen provincie gegevens
+            # Provincie: Specifiek -> Gemeente: Alles     -> gegevens alle gemeentes van die provincie
+            # Provincie: Specifiek -> Gemeente: Specifiek -> gegevens van alleen die gemeente binnen die provincie
+            filter = per_week("G", form.gem_sel.data, dat_van, dat_tot )
+            if form.prov_sel.data == "Alles":
+                # filter met alleen provincie
+                m["provincie"] = naam
+                print(f"ALLEEN ALLE PROVINCIES")
+            elif form.gem_sel.data == "Alles":
+                # filter met 1 provincie en alle gemeentes
+                print(f"SPECIFIEKE PROVINCIE, ALLE GEMEENTES")
+            elif form.gem_sel.data != "Alles":
+                print(f"SPECIFIEKE PROVINCIE, SPECIFIEKE GEMEENTE")
+
             if form.gem_sel.data != "Alles":
                 # print(f"ONGELIJK AAN 'ALLES'")
                 # prov_filter["$in"] = alle_provincies # List met alle Provincies

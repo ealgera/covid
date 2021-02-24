@@ -12,46 +12,39 @@ def per_prov_gem(provincie, dat_van, dat_tot, niveau):
             "overleden": { "$sum": "$overleden" }
             } 
         },
-        # {"$addFields": 
-            # { "totalRep": { "$sum": "$reported" } }
-        # },
         {"$sort": {"reported": 1} }
     ]
     return pipeline
 
-def per_week(gemeente: str, datum):
+def per_week(niveau, naam, dat_van, dat_tot):
+    match, groep = {}, {}
+    # match["provincie"] = naam
+    # if niveau == "G":
+        # match["gem_naam"] = naam
     
-    # pipeline = [
-    #     {"$match": {
-    #         "gem_naam"   : gemeente,
-    #          "publicatie": {"$lte": datum} }
-    #     },
-    #     {"$group": { 
-    #         "_id"      : { "$isoWeek": "$publicatie" }, 
-    #         "reported" : { "$sum"    : "$tot_reported" },
-    #         "opnames"  : { "$sum"    : "$opnames" },
-    #         "overleden": { "$sum"    : "$overleden" }
-    #         } 
-    #     },
-    #     {"$sort": {"_id": 1}}
-    # ]
+    groep["_id"]       = {"$isoWeek": "$publicatie"}
+    groep["reported"]  = {"$sum"    : "$tot_reported"}
+    groep["opnames"]   = {"$sum"    : "$opnames"}
+    groep["overleden"] = {"$sum"    : "$overleden"}
 
     pipeline = [
         {"$match": 
-            {"gem_naam"  : gemeente, 
-            "publicatie": {"$lte": datum}
+            {
+                "gem_naam" : naam, 
+                "publicatie": { "$gte": dat_van, "$lte": dat_tot }
             }
         }, 
-        {"$group": 
-            {
-                "_id"      : {"$isoWeek": "$publicatie"},
+        {"$group": groep
+            # {
+                # "_id"      : {"$isoWeek": "$publicatie"},
                 # "_id"      : {"$toDate"    : "$publicatie"},
-                "reported" : {"$sum"    : "$tot_reported"},
-                "opnames"  : {"$sum"    : "$opnames"},
-                "overleden": {"$sum"    : "$overleden"}
-            }  
+                # "reported" : {"$sum"    : "$tot_reported"},
+                # "opnames"  : {"$sum"    : "$opnames"},
+                # "overleden": {"$sum"    : "$overleden"}
+            # }  
         }, 
         {"$sort": {"_id": 1}}
     ]
 
+    print(f"PIPELINE: {pipeline}")
     return pipeline

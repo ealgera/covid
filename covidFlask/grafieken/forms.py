@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import SubmitField, DateField, SelectField, BooleanField
+from wtforms import SubmitField, DateField, SelectField, BooleanField, RadioField
 # from wtforms.fields.html5 import DateField
 from wtforms.validators import DataRequired, Length
 from wtforms.fields.html5 import DateField
@@ -20,7 +20,6 @@ class DatGrafiekForm(FlaskForm):
     dat_vanaf = DateField("Vanaf", format="%Y-%m-%d")
     dat_tm    = DateField("Tot en Met", format="%Y-%m-%d")
     gemniveau = BooleanField(label="Per Gemeente?")
-
-    ## Radiobuttons: per dag, per week, per maand
+    pertijd   = RadioField("", choices=[ ("perdag","dag"), ("perweek","week"), ("permaand","maand") ], default='perweek' )
 
     submit    = SubmitField('Laat gegevens zien')
