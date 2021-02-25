@@ -70,6 +70,7 @@ def tot_grafieken():
 @grafieken_bp.route("/datum-grafieken", methods=["GET", "POST"])
 def datum_grafieken():
     labels, values = [], []
+    periode        = "W"
     gevonden       = False
     type           = "Periode"
     legenda        = "Totalen per " + type
@@ -86,51 +87,52 @@ def datum_grafieken():
 
     if form.validate_on_submit():
         print("\nGEVALIDEERD!")
-        print(f"FORM - POST: {form.data}")
- 
-        niveau   = "$provincie"
-        # if form.gemniveau.data:
-            # niveau  = "$gem_naam"
-            # type    = "Gemeente"
-            # legenda = "Totalen per " + type
- 
+        # print(f"FORM - POST: {form.data}")
+
+        if form.pertijd.data == "perdag":
+            periode = "D"
+        elif form.pertijd.data == "perweek":
+            periode = "W"
+        else:
+            periode = "M"
+
         if form.dat_tm.data > datetime.date(datetime.now()):
             flash("Datum mag niet in de toekomst liggen!", category="error")
             redirect( url_for("grafieken_bp.datum_grafieken") )
         
         else:
-            print(f"DATUM KLOPT...")
+            # print(f"DATUM KLOPT...")
             dat_van = datetime.combine(form.dat_vanaf.data, datetime.min.time()) # Date naar DateTime conversie
             dat_tot = datetime.combine(form.dat_tm.data, datetime.min.time())    # Date naar DateTime conversie
-
-            # Provincie: Alles     -> alleen provincie gegevens
+            
             # Provincie: Specifiek -> Gemeente: Alles     -> gegevens alle gemeentes van die provincie
             # Provincie: Specifiek -> Gemeente: Specifiek -> gegevens van alleen die gemeente binnen die provincie
-            filter = per_week("G", form.gem_sel.data, dat_van, dat_tot )
-            if form.prov_sel.data == "Alles":
-                # filter met alleen provincie
-                m["provincie"] = naam
-                print(f"ALLEEN ALLE PROVINCIES")
+            # filter = per_week("G", periode, form.gem_sel.data, dat_van, dat_tot )
+            if form.prov_sel.data == "Alles":   # Provincie: Alles     -> alleen provincie gegevens
+                # print(f"ALLEEN ALLE PROVINCIES")
+                prov_filter["$in"] = alle_provincies                   # Filter: { "$in: ['List alle provincies'] }
+                filter = per_week("P", periode, prov_filter, dat_van, dat_tot )
             elif form.gem_sel.data == "Alles":
                 # filter met 1 provincie en alle gemeentes
-                print(f"SPECIFIEKE PROVINCIE, ALLE GEMEENTES")
+                # print(f"SPECIFIEKE PROVINCIE, ALLE GEMEENTES")
+                filter = per_week("P", periode, form.prov_sel.data, dat_van, dat_tot )
             elif form.gem_sel.data != "Alles":
-                print(f"SPECIFIEKE PROVINCIE, SPECIFIEKE GEMEENTE")
+                # print(f"SPECIFIEKE PROVINCIE, SPECIFIEKE GEMEENTE")
+                filter = per_week("G", periode, form.gem_sel.data, dat_van, dat_tot )
 
-            if form.gem_sel.data != "Alles":
+            # if form.gem_sel.data != "Alles":
                 # print(f"ONGELIJK AAN 'ALLES'")
                 # prov_filter["$in"] = alle_provincies # List met alle Provincies
-                filter = per_week(form.gem_sel.data, dat_tot )
+                # filter = per_week("G", form.gem_sel.data, dat_van, dat_tot )
                 # print(f"FILTER = {filter}")
-            else:
-                # print(f"GELIJK AAN 'ALLES'")
-                flash("Kies één Gemeente...", category="error")
-                redirect( url_for("grafieken_bp.datum_grafieken") )
+            # else:
+                print(f"GELIJK AAN 'ALLES'")
+                # flash("Kies één Gemeente...", category="error")
+                # redirect( url_for("grafieken_bp.datum_grafieken") )
             
             locatie_getallen = covid_col.aggregate(filter)
  
             for item in locatie_getallen:
-                # print(f"ITEM: {item}")
                 gevonden = True
                 labels.append(item["_id"])      # Weeknummers van het jaar
                 values.append(item["reported"]) # Gerapporteerd per week
