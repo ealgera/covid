@@ -11,10 +11,7 @@ db = client[de_data]
 
 covid_col    = db["covidcol"]
 gemeente_col = db["gemeentes"]
-
-def alle_rekeningen():
-    pass
-    # return rekeningen_col.find({})
+covid_test   = db["testen"]
 
 def eerste_laatste_dat():
     pipeline = [ 
@@ -59,3 +56,21 @@ def tot_per_datum(van, tot):
 
     totaal = covid_col.aggregate(pipeline)
     return list(totaal)
+
+def per_regio(regio, dat_van, dat_tot):
+    # Aggregatie pipeline voor sommatie van getallen per provincie en gemeente (binnen de provincie)
+    pipeline = [
+        {"$match": {
+            "sec_reg_naam" : regio, # Een enkele Regio of een List van Regio's icm $in
+            "publicatie"   : { "$gte": dat_van, "$lte": dat_tot} }
+        },
+        {"$group": { 
+            "_id"      : "$sec_reg_naam",    # Per Regio
+            "getest"   : { "$sum": "$test_tot" },
+            "positief" : { "$sum": "$test_pos" },
+            } 
+        },
+        {"$sort": {"_id": 1} }
+    ]
+
+    return pipeline

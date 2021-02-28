@@ -2,8 +2,8 @@ from flask import Blueprint, render_template, flash, redirect, url_for #, reques
 # from flask import current_app as app
 from datetime import datetime
 
-from covidFlask.db import gemeente_col, covid_col
-from .forms import GegevensForm
+from covidFlask.db import gemeente_col, covid_col, covid_test, per_regio
+from .forms import GegevensForm, RegioForm
 # from covidFlask import db
 
 gegevens_bp = Blueprint("gegevens_bp", __name__, 
@@ -31,7 +31,6 @@ def per_prov_gem(provincie, dat_van, dat_tot, niveau):
     ]
 
     return pipeline
-
 
 @gegevens_bp.route("/gegevens-gemeentes", methods=["GET", "POST"])
 def gegevens_gemeentes():
@@ -78,6 +77,49 @@ def gegevens_gemeentes():
     # print(f"\n\nFORM - GET : {form.data}")
 
     return render_template("/gegevens.html", form=form, locatie_getallen=locatie_getallen)
+
+@gegevens_bp.route("/gegevens-regio", methods=["GET", "POST"])
+def gegevens_regio():
+
+    locatie_getallen = []
+    regio_filter     = {}
+    form             = RegioForm()
+    alle_regios      = covid_test.distinct("sec_reg_naam")
+    alle_regios.insert(0, "Alles")
+    form.regio_sel.choices = alle_regios
+
+    if form.validate_on_submit():
+        print("\nGAVALIDEERD!")
+        print(f"FORM - POST: {form.data}")
+
+        if form.dat_tm.data > datetime.date(datetime.now()):
+            flash("Datum mag niet in de toekomst liggen!", category="error")
+            redirect( url_for("gegevens_bp.gegevens_gemeentes") )
+        
+        else:
+            dat_van = datetime.combine(form.dat_vanaf.data, datetime.min.time()) # Date naar DateTime conversie
+            dat_tot = datetime.combine(form.dat_tm.data, datetime.min.time()) # Date naar DateTime conversie
+            if form.regio_sel.data == "Alles":
+                regio_filter["$in"] = alle_regios # List met alle Regio's
+                filter = per_regio(regio_filter, dat_van, dat_tot)
+            else:
+                filter = per_regio(form.regio_sel.data, dat_van, dat_tot)
+            
+            # print(f"FILTER: {filter}")
+            locatie_getallen = covid_test.aggregate(filter)
+
+            # for item in locatie_getallen:
+                # print(f"ITEM: {item}")
+
+    else:
+        print(f"ERRORS: {form.errors}")
+
+    # GET
+    form.dat_vanaf.data = datetime.date(datetime.strptime("2021-01-01", "%Y-%m-%d"))
+    form.dat_tm.data    = datetime.date(datetime.now())
+    # print(f"\n\nFORM - GET : {form.data}")
+
+    return render_template("/regios.html", form=form, locatie_getallen=locatie_getallen)
 
 
 @gegevens_bp.route("/gegevens-casuslandelijk", methods=["GET", "POST"])

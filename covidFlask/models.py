@@ -1,109 +1,53 @@
 '''
-Rekeningen {
-    "_id":"NL38INGB0006110821",
-    "naam":"Vaste lasten rekening",
-    "bank":"ING",
-    "saldodatum":"2020-01-01T00:00:00.000Z",
-    "startsaldo":0
-}
-
-Posten {
-    "_id":"Action",
-     "soort":"Uitgaven",
-     "categorie":"Huishoudelijk",
-     "hits":0,
-     "lasthit":"1900-01-01T00:00:00.000Z",
-     "opmerking": "Spullen van de Action"
-}
-
-Posten {
-    "_id":"Spar",
-     "soort":"Uitgaven",
-     "categorie":"Levensmiddelen",
-     "onderdelen": ["jumbo", "plus", "albert heijn", "spar"]
-     "hits":0,
-     "lasthit":"1900-01-01T00:00:00.000Z"
-}
-
-sm2 = ["Jumbo", "Plus", "Albert Heijn", "AH", "Spar"]
-v =  "jum"
-[x for x in sm2 if v in x.lower()]
-=> ['jumbo']
-
-Categorieen {
-    "_id": "Levensmiddelen",
-    "soort": "Uitgaven",
-}
-
-Transactie
+CovidCasus
 {
-    _id: ObjectId(),
-    datum: 20200617,
-    naam: "Staatsloterij B.V.",
-    rekening: "NL38INGB0006110821",
-    tegenrekening: "NL25INGB0653573251",
-    code: "IC",
-    bedrag: 15.00,
-    mutsoort: "Incasso",
-    mededeling: {
-        'naam': 'Staatsloterij B.V.', 
-        'omschrijving': '1 juli trekking .Incasso trekking 01-07-2020 .56361341/9/1', 
-        'iban': 'NL25INGB0653573251', 
-        'kenmerk': '56361341-9-1 Machtiging ID: ABO56361341 Incassant ID: NL40CON271397880000 Eerste incasso', 
-        'valutadatum': '17-06-2020'},
-    opmerking: "Dit is een opmerking..."
-    tags: [
-        "Vaste last", "Rekening"],
-    posts: [
-        {
-            _id: "Staatsloterij",
-            soort: "Uitgaven",
-            categorie: "Abonnementen",
-            toegekend: 15.00
-        }]
+	"_id"                 : ObjectId("6028574b09095c1b022c3086"),
+	"datum"               : ISODate("2021-02-13T10:00:00Z"),
+	"publicatie"          : ISODate("2021-01-01T00:00:00Z"),
+	"stat_type"           : "DOO",
+	"leeftijd_grp"        : 49,
+	"geslacht"            : "V",
+	"provincie"           : "Drenthe",
+	"ziekenhuis"          : false,
+	"overleden"           : false,
+	"week_van_overlijden" : "",
+	"gem_service"         : "GGD Drenthe"
 }
 
-ToekomstTransacties
+CovidCol
 {
-    _id: ObjectId(),
-    datum: 20200926,
-    rekening: "NL38INGB0006110821",
-    naam: "Staatsloterij B.V.",
-    bedrag: 15.00,
-    opmerking: "Dit is een opmerking...",
-    lopendsaldo: -1009.56,
-    tags: [
-        "Vaste last", "Rekening"],
-    post: [
-        {
-            _id: "Staatsloterij",
-            soort: "Uitgaven",
-            categorie: "Abonnementen",
-            toegekend: 15.00
-        }]
+	"_id"          : ObjectId("600dab0ce39bada54078118a"),
+	"datum"        : ISODate("2021-01-24T10:00:00Z"),
+	"publicatie"   : ISODate("2021-01-01T00:00:00Z"),
+	"gem_code"     : "GM0014",
+	"gem_naam"     : "Groningen",
+	"provincie"    : "Groningen",
+	"sec_reg_code" : "VR01",
+	"sec_reg_naam" : "Groningen",
+	"gem_service"  : "GGD Groningen",
+	"roaz_reg"     : "Acute Zorgnetwerk Noord Nederland",
+	"tot_reported" : 69,
+	"opnames"      : 1,
+	"overleden"    : 1
 }
 
-Ingelezen {
-    # Eén object per rekening!!
-    _id: OjectId(),
-    soort: "transactie",
-    data: {
-        datum_in : 20200727,
-        rekening: "NL38INGB0006110821",
-        datum_van: 20200601,
-        datum_tm : 20200630,
-        trans_aantal: 124,
-        trans_herkend: 112,
-        bedrag_tot: -1500.2 }
-    }
+Gemeentes
+{
+	"_id" : ObjectId("600ca8a51ba06e9fe2ebca64"),
+	"provincie" : "Groningen",
+	"gemeente"  : "Groningen",
+	"inwoners"  : 231112
+}
 
-Ingelezen {
-    _id: OjectId(),
-    soort: "post",
-    data: {
-        datum_in : 20200727,
-        soort: 2,
-        categorie: 30,
-        post: 150 }
-    }
+Testen
+{
+    "_id"          : ObjectId("600ca8a51ba06e9fe2ebca64"),
+    "datum"        : ISODate("2021-01-24T10:00:00Z"),
+	"publicatie"   : ISODate("2021-01-01T00:00:00Z"),
+    "sec_reg_code" : "VR01",
+	"sec_reg_naam" : "Groningen",
+    "test_tot"     : 100,
+    "test_pos"     : 10
+}
+
 '''

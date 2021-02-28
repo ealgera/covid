@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="mt-4">
+
+    <div class="card bg-info text-white mb-3">
+        <div class="card-body">
+            <h2 class="card-title">Inlezen Test Data</h2>
+        </div>
+    </div>
+
+    <div>
+        <h5>Haal CSV bestand met dagelijkse COVID testdata.</h5>
+    </div>
+
+    <form method="POST" class="form" role="form" action="{{url_for('inlezen_bp.inlezen_testdata')}}">
+        
+        <br>
+        <div class="form-group row">
+            <div class="col-2">
+                {{ form.laatst_verwerkt.label }}
+            </div>
+            <div class="col-10">
+                {{ form.laatst_verwerkt.data }}
+            </div>
+        </div>
+
+        <div class="form-check">
+            {{ form.dry_run(class_="form-check-input") }}
+            {{ form.dry_run.label(class_="form-check-label") }}
+        </div>
+
+        <br>
+        {{ form.submit(class_="btn btn-primary") }}
+    </form>
+
+    {% if is_verwerkt %}
+        <br>
+        <div class="form-group row">
+            <div class="col-2">
+                Laatste datum:
+            </div>
+            <div class="col-10">
+                {{ laatst_verwerkt_dat }}
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-2">
+                Aantal Getest:
+            </div>
+            <div class="col-10">
+                {{ aantallen["getest"] }}
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-2">
+                Aantal positief:
+            </div>
+            <div class="col-10">
+                {{ aantallen["positief"] }}
+            </div>
+        </div>
+    {% endif %}
+
+    <br> <hr>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                {% if category == "error" %}
+                    <div class="alert alert-danger">
+                        {{ message }}
+                    </div>
+                {% endif %}
+                {% if category == "info" %}
+                    <div class="alert alert-info">
+                        {{ message }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+</div>
+
+{% endblock %}

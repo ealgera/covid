@@ -13,3 +13,10 @@ class GegevensForm(FlaskForm):
     gemniveau = BooleanField(label="Per Gemeente?")
 
     submit    = SubmitField('Laat gegevens zien')
+
+class RegioForm(FlaskForm):
+    regio_sel = SelectField("Regio")
+    dat_vanaf = DateField("Vanaf", format="%Y-%m-%d")
+    dat_tm    = DateField("Tot en Met", format="%Y-%m-%d")
+
+    submit    = SubmitField('Laat gegevens zien')

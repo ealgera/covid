@@ -1,15 +1,9 @@
 from datetime    import datetime
 from collections import defaultdict
 from flask       import current_app as app
-import requests
 import csv
 
-from ..db import covid_col
-
-# hit_datum   = datetime.strptime("19000101", "%Y%m%d")
-csv_file    = "COVID-19_uitgevoerde_testen.csv"
-csv_to_save = app.root_path + app.config["UPLOAD_FOLDER"] + csv_file
-url         = "https://data.rivm.nl/covid-19/" + csv_file
+from ..db import covid_test
 
 '''
 CSV formaat:
@@ -22,95 +16,42 @@ CSV formaat:
     Tested_positive;
 '''
 
-def laatste_datum():
-    pipeline = [ 
-        {"$group": 
-            {
-                "_id"       : "null",
-                "datumMin"  : {"$min": "$publicatie"},
-                "datumMax"  : {"$max": "$publicatie"}
-            }
-        }
-    ]
-
-    datums = covid_col.aggregate(pipeline)
-    return list(datums)[0]['datumMax'].strftime('%Y-%m-%d')  # String output
-
-
-def haal_csv():
-    meldingen = []
-    fout      = False
-    print(f"[COVID] CSV Bestand wordt gehaald... ( {url} )")
-    
-    try:
-        req = requests.get(url, allow_redirects=True)
-    except Exception as e:
-        fout = True
-        print(f"[COVID] FOUT:")
-        print(e)
-    else:
-        if req.headers['Content-Type'].split('/')[1] != "csv":
-            fout = True
-            meldingen.append("[COVID] CSV Bestand niet gevonden!!")
-        else:
-            meldingen.append("[COVID] CSV Bestand opgehaald...")
-
-    # meldingen.append(f"[COVID] Status: {req.status_code}")
-
-    with open(csv_to_save, 'wb') as f:
-        f.write(req.content)
-    
-    return meldingen, fout
-
-
-def verwerk_testdata(last_date, dry_run):
-    totalen    = defaultdict(int)
-    last_date  = datetime.strptime(last_date, "%Y-%m-%d")
-    max_date   = last_date
+def verwerk_testdata(csv_file, last_date, dry_run):
+    totalen     = defaultdict(int)
+    last_date   = datetime.strptime(last_date, "%Y-%m-%d")
+    max_date    = last_date
+    fout        = False
+    csv_to_save = app.root_path + app.config["UPLOAD_FOLDER"] + csv_file
 
     with open(csv_to_save, "r") as txt_file:
         regels = csv.DictReader(txt_file, delimiter=";")
 
         for regel in regels:
             
-            if regel["Version"] != "1":
+            if regel["Version"] != "1":         # Deze versie wordt verwerkt
+                fout = True
+                return totalen, max_date, fout
                 
             rep_date = datetime.strptime(regel["Date_of_report"], "%Y-%m-%d %H:%M:%S")
-            pub_date = datetime.strptime(regel["Date_of_publication"], "%Y-%m-%d")
+            pub_date = datetime.strptime(regel["Date_of_statistics"], "%Y-%m-%d")
     
-            if pub_date > last_date:
+            if pub_date > last_date:          # Alleen records verwerken met een stat_dat > laatste verwerkingsdatum
                 
-                if pub_date > max_date:
-                    max_date = pub_date
-                if regel["Province"] not in provincies:
-                    provincies.append(regel["Province"])
-                if regel["Municipality_name"] not in gemeentes:
-                    gemeentes.append(regel["Municipality_name"])
-
                 if not dry_run:
                     print(f"VOOR HET ECHIE....")
-                    # covid_col.insert_one(
-                        # { "datum"       : rep_date, #regel["Date_of_report"], 
-                        #   "publicatie"  : pub_date, # regel["Date_of_publication"], 
-                        #   "gem_code"    : regel["Municipality_code"], 
-                        #   "gem_naam"    : regel["Municipality_name"],
-                        #   "provincie"   : regel["Province"],
-                        #   "sec_reg_code": regel["Security_region_code"],
-                        #   "sec_reg_naam": regel["Security_region_name"],
-                        #   "gem_service" : regel["Municipal_health_service"],
-                        #   "roaz_reg"    : regel["ROAZ_region"],
-                        #   "tot_reported": int(regel["Total_reported"]),
-                        #   "opnames"     : int(regel["Hospital_admission"]),
-                        #   "overleden"   : int(regel["Deceased"])
-                        # }
-                    # )
+                    covid_test.insert_one(
+                        { "datum"        : rep_date,
+                          "publicatie"   : pub_date,
+                          "sec_reg_code" : regel["Security_region_code"],
+                          "sec_reg_naam" : regel["Security_region_name"],
+                          "test_tot"     : int(regel["Tested_with_result"]),
+                          "test_pos"     : int(regel["Tested_positive"])
+                        }
+                    )
 
-                totalen["verwerkt"]      += 1
-                totalen["gerapporteerd"] += int(regel["Total_reported"])
-                totalen["opnames"]       += int(regel["Hospital_admission"])
-                totalen["overleden"]     += int(regel["Deceased"])
+                max_date             = pub_date
+                totalen["verwerkt"] += 1
+                totalen["getest"]   += int(regel["Tested_with_result"])
+                totalen["positief"] += int(regel["Tested_positive"])
 
-        totalen["gemeentes"]  = len(gemeentes)
-        totalen["provincies"] = len(provincies)
-
-    return totalen, max_date
+    return totalen, max_date, fout

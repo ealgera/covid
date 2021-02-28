@@ -7,6 +7,7 @@ UPLOAD_FOLDER = environ.get("UPLOAD_FOLDER")
 RECS_PER_PAGE = 15
 
 DE_DATA       = environ.get("DE_DATA")
+RIVM_URL      = "https://data.rivm.nl/covid-19/"
 
 #EXPLAIN_TEMPLATE_LOADING = True
 

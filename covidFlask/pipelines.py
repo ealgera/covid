@@ -41,6 +41,16 @@ def per_week(niveau, periode, naam, dat_van, dat_tot):
         {"$group": groep }, 
         {"$sort" : {"_id": 1}}
     ]
+    return pipeline
 
-    # print(f"PIPELINE: {pipeline}")
+def test_totalen(niveau):  # Totalen per opgegeven niveau: bv. "null", $sec_reg_naam, etc.
+
+    pipeline = [
+        {"$group" : {
+                "_id"      : niveau,
+                "getest"   : { "$sum" : "$test_tot" },
+                "positief" : { "$sum" : "$test_pos" } }
+        }
+    ]
+
     return pipeline
