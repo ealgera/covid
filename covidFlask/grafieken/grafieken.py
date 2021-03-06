@@ -1,9 +1,9 @@
 from flask    import Blueprint, render_template, flash, redirect, url_for #, request, redirect, url_for, flash #, session
 from datetime import datetime
 
-from covidFlask.db        import gemeente_col, covid_col
-from .forms               import TotGrafiekForm, DatGrafiekForm
-from covidFlask.pipelines import per_prov_gem, per_week
+from covidFlask.db        import gemeente_col, covid_col, covid_test
+from .forms               import TotGrafiekForm, DatGrafiekForm, TstDatGrafiekForm
+from covidFlask.pipelines import per_prov_gem, per_week, testen_per_periode
 
 grafieken_bp = Blueprint("grafieken_bp", __name__, 
     template_folder= "templates",
@@ -150,6 +150,88 @@ def datum_grafieken():
 
     return render_template("dat-grafieken.html", labels=labels, values=values, legenda=legenda, type=type, gevonden=gevonden, form=form)
 
+@grafieken_bp.route("/test-grafieken", methods=["GET", "POST"])
+def tot_test_grafieken():
+    return "<h1>Dit is test-grafieken</h1>"
+
+@grafieken_bp.route("/test-datum-grafieken", methods=["GET", "POST"])
+def tot_test_datum_grafieken():
+    labels, valuesA, valuesB = [], [], []
+    periode        = "W"
+    gevonden       = False
+    type           = "Periode"
+    legenda1       = "Totaal Getest per " + type
+    legenda2       = "Totaal Positief per " + type
+    
+    locatie_getallen = []
+    regio_filter     = {}
+    form             = TstDatGrafiekForm()
+    alle_regios      = covid_test.distinct("sec_reg_naam")
+    alle_regios.insert(0, "Alles")
+    form.regio_sel.choices = alle_regios
+
+    if form.validate_on_submit():
+        print("\nGEVALIDEERD!")
+        print(f"FORM - POST: {form.data}")
+
+        if form.pertijd.data == "perdag":
+            periode = "D"
+        elif form.pertijd.data == "perweek":
+            periode = "W"
+        else:
+            periode = "M"
+
+        if form.dat_tm.data > datetime.date(datetime.now()):
+            flash("Datum mag niet in de toekomst liggen!", category="error")
+            redirect( url_for("grafieken_bp.tot_test_datum_grafieken") )
+        
+        else:
+            # print(f"DATUM KLOPT...")
+            dat_van = datetime.combine(form.dat_vanaf.data, datetime.min.time()) # Date naar DateTime conversie
+            dat_tot = datetime.combine(form.dat_tm.data, datetime.min.time())    # Date naar DateTime conversie
+            
+            # Provincie: Specifiek -> Gemeente: Alles     -> gegevens alle gemeentes van die provincie
+            # Provincie: Specifiek -> Gemeente: Specifiek -> gegevens van alleen die gemeente binnen die provincie
+            # filter = per_week("G", periode, form.gem_sel.data, dat_van, dat_tot )
+            if form.regio_sel.data == "Alles":   # Regio: Alles  -> Alle testgegevens
+                # print(f"ALLEEN ALLE PROVINCIES")
+                regio_filter["$in"] = alle_regios                   # Filter: { "$in: ['List alle provincies'] }
+                filter = testen_per_periode("A", periode, regio_filter, dat_van, dat_tot )
+            elif form.regio_sel.data != "Alles":
+                # print(f"SPECIFIEKE PROVINCIE, SPECIFIEKE GEMEENTE")
+                filter = testen_per_periode("R", periode, form.regio_sel.data, dat_van, dat_tot )
+
+                print(f"GELIJK AAN 'ALLES'")
+            
+            # print(f"FILTER: {filter}")
+            locatie_getallen = covid_test.aggregate(filter)
+ 
+            for item in locatie_getallen:
+                gevonden = True
+                # if item["_id"] >= 6:
+                    # item["_id"] = "2020-" + item["_id"]
+                # else:
+                    # item["_id"] = "2021-" + item["_id"]
+                labels.append(item["_id"])           # Periodenummers van het jaar (dag, week of maand)
+                valuesA.append(item["tot_getest"])   # Gerapporteerd per periode
+                valuesB.append(item["tot_positief"]) # Gerapporteerd per periode
+
+    else:
+        print(f"ERRORS: {form.errors}")
+
+    # GET
+    form.dat_vanaf.data = datetime.date(datetime.strptime("2021-01-01", "%Y-%m-%d"))
+    form.dat_tm.data    = datetime.date(datetime.now())
+    # print(f"\n\nFORM - GET : {form.data}")
+
+    print(f"LABELS : {labels}")
+    print(f"VALUESA: {valuesA}")
+    print(f"VALUESB: {valuesB}")
+
+    return render_template("tot-test-dat-grafieken.html", labels=labels, valuesA=valuesA, valuesB=valuesB, 
+        legenda1=legenda1, legenda2=legenda2, type=type, gevonden=gevonden, form=form)
+
+
 @grafieken_bp.route("/grafieken-casuslandelijk", methods=["GET", "POST"])
-def grafieken_casuslandelijk():
+def grafieken_casuslandelijk():    
     return "<h1>Dit is grafieken_casuslandelijk</h1>"

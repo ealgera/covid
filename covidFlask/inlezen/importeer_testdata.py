@@ -38,7 +38,7 @@ def verwerk_testdata(csv_file, last_date, dry_run):
             if pub_date > last_date:          # Alleen records verwerken met een stat_dat > laatste verwerkingsdatum
                 
                 if not dry_run:
-                    print(f"VOOR HET ECHIE....")
+                    # print(f"VOOR HET ECHIE....")
                     covid_test.insert_one(
                         { "datum"        : rep_date,
                           "publicatie"   : pub_date,

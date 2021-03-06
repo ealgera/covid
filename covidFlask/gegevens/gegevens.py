@@ -65,12 +65,6 @@ def gegevens_gemeentes():
             
             locatie_getallen = covid_col.aggregate(filter)
 
-            # for item in locatie_getallen:
-                # print(f"ITEM: {item}")
-
-    # else:
-#         print(f"ERRORS: {form.errors}")
-
     # GET
     form.dat_vanaf.data = datetime.date(datetime.strptime("2021-01-01", "%Y-%m-%d"))
     form.dat_tm.data    = datetime.date(datetime.now())

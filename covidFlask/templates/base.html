@@ -56,8 +56,10 @@
                             Grafieken
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="{{ url_for('grafieken_bp.tot_grafieken') }}">Totalen</a>
-                            <a class="dropdown-item" href="{{ url_for('grafieken_bp.datum_grafieken') }}">Totalen per Periode</a>
+                            <a class="dropdown-item" href="{{ url_for('grafieken_bp.tot_grafieken') }}">Totaal Gerapporteerd</a>
+                            <a class="dropdown-item" href="{{ url_for('grafieken_bp.datum_grafieken') }}">Totaal Gerapporteerd per Periode</a>
+                            <a class="dropdown-item" href="{{ url_for('grafieken_bp.tot_test_grafieken') }}">Totaal Getest</a>
+                            <a class="dropdown-item" href="{{ url_for('grafieken_bp.tot_test_datum_grafieken') }}">Totaal Getest per Periode</a>
                             <a class="dropdown-item" href="{{ url_for('grafieken_bp.grafieken_casuslandelijk') }}">Grafieken Casus Landelijk</a>
                         </div>
                     </li>

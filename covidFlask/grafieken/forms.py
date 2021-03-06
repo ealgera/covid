@@ -23,3 +23,12 @@ class DatGrafiekForm(FlaskForm):
     pertijd   = RadioField("", choices=[ ("perdag","dag"), ("perweek","week"), ("permaand","maand") ], default='perweek' )
 
     submit    = SubmitField('Laat gegevens zien')
+
+class TstDatGrafiekForm(FlaskForm):
+    regio_sel = SelectField("Veigheidsregio")
+    dat_vanaf = DateField("Vanaf", format="%Y-%m-%d")
+    dat_tm    = DateField("Tot en Met", format="%Y-%m-%d")
+    regniveau = BooleanField(label="Per Veiligheidsregio?")
+    pertijd   = RadioField("", choices=[ ("perdag","dag"), ("perweek","week"), ("permaand","maand") ], default='perweek' )
+
+    submit    = SubmitField('Laat gegevens zien')
