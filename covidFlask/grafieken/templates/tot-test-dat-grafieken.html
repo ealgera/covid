@@ -45,13 +45,30 @@
             </div>
         </div>
 
-        <div class="form-check-inline row">
-            {% for subfield in form.pertijd %}
-                <div class="col-3">
-                    {{ subfield (class_="form-check-input") }}
-                    {{ subfield.label (class_="form-check-label") }}
-                </div>
-            {% endfor %}
+        <div class="form-group row">
+            <div class="col-2 mt-2">
+                {{ form.y_as_min.label }}
+            </div>
+            <div class="col-2">
+                {{ form.y_as_min (class_="form-control") }}
+            </div>
+            <div class="col-2 text-right mt-2">
+                {{ form.y_as_max.label }}
+            </div>
+            <div class="col-2">
+                {{ form.y_as_max (class_="form-control") }}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-check-inline">
+                {% for subfield in form.pertijd %}
+                    <div class="col-2">
+                        {{ subfield (class_="form-check-input") }}
+                        {{ subfield.label (class_="form-check-label") }}
+                    </div>
+                {% endfor %}
+            </div>
         </div>
 
         <br><br>
@@ -124,10 +141,10 @@
 							id: 'B',
 							type: 'linear',
 							position: 'right',
-                            // ticks: {
-                            //   max: 2000,
-                            //   min: 300
-                            // }
+                            ticks: {
+                              max: {{ y_max}},
+                              min: {{ y_min}}
+                            }
 						}
 					]
 			    }

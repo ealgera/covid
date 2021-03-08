@@ -159,17 +159,20 @@ def tot_test_datum_grafieken():
     labels, valuesA, valuesB = [], [], []
     periode        = "W"
     gevonden       = False
-    type           = "Periode"
-    legenda1       = "Totaal Getest per " + type
-    legenda2       = "Totaal Positief per " + type
+    grafiek_type   = "Periode"
+    legenda1       = "Totaal Getest per " + grafiek_type
+    legenda2       = "Totaal Positief per " + grafiek_type
     
     locatie_getallen = []
     regio_filter     = {}
     form             = TstDatGrafiekForm()
     alle_regios      = covid_test.distinct("sec_reg_naam")
     alle_regios.insert(0, "Alles")
+    y_as_min, y_as_max = 0, 0
     form.regio_sel.choices = alle_regios
 
+    # print(f"REGIO keuzes    : {form.regio_sel.choices}")
+    # print(f"REGIO vóór POST : {form.regio_sel.data}")
     if form.validate_on_submit():
         print("\nGEVALIDEERD!")
         print(f"FORM - POST: {form.data}")
@@ -201,8 +204,13 @@ def tot_test_datum_grafieken():
                 # print(f"SPECIFIEKE PROVINCIE, SPECIFIEKE GEMEENTE")
                 filter = testen_per_periode("R", periode, form.regio_sel.data, dat_van, dat_tot )
 
-                print(f"GELIJK AAN 'ALLES'")
-            
+            if int(form.y_as_min.data) >= int(form.y_as_max.data):
+                flash("Y-as minimum moet kleiner zijn dan Y-as maximum!", category="error")
+                redirect( url_for("grafieken_bp.tot_test_datum_grafieken") )
+            else:
+                print(f"Y-AS WAARDEN GEVULD")
+                y_as_min = int(form.y_as_min.data)
+                y_as_max = int(form.y_as_max.data)
             # print(f"FILTER: {filter}")
             locatie_getallen = covid_test.aggregate(filter)
  
@@ -218,18 +226,25 @@ def tot_test_datum_grafieken():
 
     else:
         print(f"ERRORS: {form.errors}")
+        print(f"DATA  : {form.data}")
 
     # GET
     form.dat_vanaf.data = datetime.date(datetime.strptime("2021-01-01", "%Y-%m-%d"))
     form.dat_tm.data    = datetime.date(datetime.now())
+    form.y_as_min.data, form.y_as_max.data = 0, 0
+    # form.regio_sel.choices = alle_regios
+    # print(f"REGIO keuzes GET: {alle_regios}")
+    
+
     # print(f"\n\nFORM - GET : {form.data}")
 
     print(f"LABELS : {labels}")
     print(f"VALUESA: {valuesA}")
     print(f"VALUESB: {valuesB}")
+    print(f"Y-MIN: {y_as_min}, Y-MAX: {y_as_max}")
 
     return render_template("tot-test-dat-grafieken.html", labels=labels, valuesA=valuesA, valuesB=valuesB, 
-        legenda1=legenda1, legenda2=legenda2, type=type, gevonden=gevonden, form=form)
+        legenda1=legenda1, legenda2=legenda2, grafiek_type=grafiek_type, gevonden=gevonden, y_min=y_as_min, y_max=y_as_max, form=form)
 
 
 @grafieken_bp.route("/grafieken-casuslandelijk", methods=["GET", "POST"])
