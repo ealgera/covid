@@ -169,6 +169,7 @@ def tot_test_datum_grafieken():
     alle_regios      = covid_test.distinct("sec_reg_naam")
     alle_regios.insert(0, "Alles")
     y_as_min, y_as_max = 0, 0
+    # y_scale            = {}
     form.regio_sel.choices = alle_regios
 
     # print(f"REGIO keuzes    : {form.regio_sel.choices}")
@@ -197,7 +198,6 @@ def tot_test_datum_grafieken():
             # Provincie: Specifiek -> Gemeente: Specifiek -> gegevens van alleen die gemeente binnen die provincie
             # filter = per_week("G", periode, form.gem_sel.data, dat_van, dat_tot )
             if form.regio_sel.data == "Alles":   # Regio: Alles  -> Alle testgegevens
-                # print(f"ALLEEN ALLE PROVINCIES")
                 regio_filter["$in"] = alle_regios                   # Filter: { "$in: ['List alle provincies'] }
                 filter = testen_per_periode("A", periode, regio_filter, dat_van, dat_tot )
             elif form.regio_sel.data != "Alles":
@@ -211,8 +211,16 @@ def tot_test_datum_grafieken():
                 print(f"Y-AS WAARDEN GEVULD")
                 y_as_min = int(form.y_as_min.data)
                 y_as_max = int(form.y_as_max.data)
-            # print(f"FILTER: {filter}")
-            locatie_getallen = covid_test.aggregate(filter)
+                # y_scale  = {
+                #     "max": y_as_max,
+                #     "min": y_as_min
+                # }
+                # t = {}
+                # t["ticks"] = y_scale
+                # print(f"Y-SCALE: {y_scale}")
+                # print(f"TICKS  : {t}")
+
+            locatie_getallen = covid_test.aggregate(filter)  # Voer een aggregatie uit obv het gemaakte filter.
  
             for item in locatie_getallen:
                 gevonden = True
@@ -232,19 +240,15 @@ def tot_test_datum_grafieken():
     form.dat_vanaf.data = datetime.date(datetime.strptime("2021-01-01", "%Y-%m-%d"))
     form.dat_tm.data    = datetime.date(datetime.now())
     form.y_as_min.data, form.y_as_max.data = 0, 0
-    # form.regio_sel.choices = alle_regios
-    # print(f"REGIO keuzes GET: {alle_regios}")
-    
 
-    # print(f"\n\nFORM - GET : {form.data}")
-
-    print(f"LABELS : {labels}")
-    print(f"VALUESA: {valuesA}")
+    # print(f"LABELS : {labels}")
+    # print(f"VALUESA: {valuesA}")
     print(f"VALUESB: {valuesB}")
     print(f"Y-MIN: {y_as_min}, Y-MAX: {y_as_max}")
 
     return render_template("tot-test-dat-grafieken.html", labels=labels, valuesA=valuesA, valuesB=valuesB, 
-        legenda1=legenda1, legenda2=legenda2, grafiek_type=grafiek_type, gevonden=gevonden, y_min=y_as_min, y_max=y_as_max, form=form)
+        legenda1=legenda1, legenda2=legenda2, grafiek_type=grafiek_type, gevonden=gevonden, y_min=y_as_min, y_max=y_as_max, # y_scale=y_scale,
+        form=form)
 
 
 @grafieken_bp.route("/grafieken-casuslandelijk", methods=["GET", "POST"])

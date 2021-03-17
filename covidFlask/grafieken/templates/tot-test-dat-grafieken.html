@@ -72,6 +72,7 @@
         </div>
 
         <br><br>
+        {{y_scale}}
         <div>
             {{ form.submit(class_="btn btn-primary") }}
         </div>
@@ -141,10 +142,8 @@
 							id: 'B',
 							type: 'linear',
 							position: 'right',
-                            ticks: {
-                              max: {{ y_max}},
-                              min: {{ y_min}}
-                            }
+                            // ticks: {'max': 10000, 'min': 4000}
+                            ticks: { max: {{ y_max}}, min: {{ y_min}} }
 						}
 					]
 			    }

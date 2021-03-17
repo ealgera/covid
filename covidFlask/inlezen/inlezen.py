@@ -34,6 +34,9 @@ def inlezen_gemeentes():
             is_verwerkt = True
             flash(f"[COVID] Aantal verwerkt: {aantallen['verwerkt']}", category="info")
 
+        if form.dry_run.data:
+            flash(f"[COVID] DIT WAS EEN OEFENING...", category="error")
+
         form.laatst_verwerkt.data = mytools.laatste_datum()
 
     ## GET
@@ -65,6 +68,9 @@ def inlezen_testdata():
                 laatst_verwerkt_dat = datetime.strftime(laatst_verwerkt_dat, "%Y-%m-%d")
                 is_verwerkt = True
                 flash(f"[COVID] Aantal verwerkt: {aantallen['verwerkt']:5,d}".replace(",","."), category="info")
+
+            if form.dry_run.data:
+                flash(f"[COVID] DIT WAS EEN OEFENING...", category="error")
 
         # filter = test_totalen("null")
         # print(f"FILTER: {filter}")
