@@ -12,6 +12,7 @@ db = client[de_data]
 covid_col    = db["covidcol"]
 gemeente_col = db["gemeentes"]
 covid_test   = db["testen"]
+covid_casus  = db["covidcasus"]
 
 def eerste_laatste_dat():
     pipeline = [ 

@@ -1,4 +1,4 @@
-from   .db    import covid_col, covid_test
+from   .db    import covid_col, covid_test, covid_casus
 from   flask  import Blueprint
 from   flask  import current_app as app
 import requests
@@ -20,6 +20,8 @@ def laatste_datum(collection="covid_col"):
         datums = list(covid_col.aggregate(pipeline))
     elif collection == "covid_test":
         datums = list(covid_test.aggregate(pipeline))
+    elif collection == "covid_casus":
+        datums = list(covid_casus.aggregate(pipeline))
 
     if datums:
         return datums[0]['datumMax'].strftime('%Y-%m-%d')  # String output

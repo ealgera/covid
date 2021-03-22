@@ -1,0 +1,33 @@
+verwerkt - 173887 
+
+00-09 - 12.298 
+10-19 - 23.729 
+20-29 - 29.123 
+30-39 - 25.555 
+40-49 - 25.085 
+50-59 - 27.652 
+60-69 - 16.190 
+70-79 -  8.931 
+80-89 -  4.234 
+90+ -    1.089 
+<50 - 1
+
+Flevoland -		 2.980 
+Zeeland -		 3.806 
+Drenthe - 		 4.739 
+Groningen -		 5.152 
+Fryslân -		 6.475 
+Overijssel -	 9.218 
+Limburg -		10.480 
+Utrecht -		12.402 
+Gelderland -	17.100 
+Noord-Brabant -	28.135 
+Noord-Holland -	34.589 
+Zuid-Holland -	38.811 
+
+DNo - 154454 
+DYes - 667 
+DUnknown - 18766 
+ZNo - 149733 
+ZYes - 1682 
+ZUnknown - 22472 
