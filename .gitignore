@@ -15,4 +15,6 @@ build/
 *.egg-info/
 
 *.old
+*.csv
+
 

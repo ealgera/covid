@@ -90,19 +90,23 @@ def inlezen_casusdata():
     is_verwerkt  = False
     laatst_verwerkt_dat = ""
     aantallen    = defaultdict(int)
+    tot_prov     = defaultdict(lambda:defaultdict(int))
     form         = ImportGemeentenForm(dry_run=True)
     verwerkt_tot = mytools.laatste_datum (collection="covid_casus")  #laatste_datum() in STR formaat
     form.laatst_verwerkt.data = verwerkt_tot
     totalen = {}
 
     if form.is_submitted():  # POST
-        csv_file        = "COVID-19_casus_landelijk.csv"
-        meldingen, fout = mytools.haal_csv(csv_file)
+        # csv_file        = "COVID-19_casus_landelijk.csv"
+        csv_file        = "COVID-19_casus_landelijk_test.csv"
+        # meldingen, fout = mytools.haal_csv(csv_file)
+        meldingen = ""
+        fout      = False
         for melding in meldingen:
             flash(melding, category="info")
 
         if not fout:
-            aantallen, laatst_verwerkt_dat, fout = importeer_casusdata.verwerk_casusdata(csv_file, verwerkt_tot, dry_run=form.dry_run.data)
+            tot_prov, aantallen, laatst_verwerkt_dat, fout = importeer_casusdata.verwerk_casusdata(csv_file, verwerkt_tot, dry_run=form.dry_run.data)
             if fout:
                 flash(f"[COVID] Er is iets fout gegaan. Versienummer?", category="error")
             else:
@@ -123,4 +127,6 @@ def inlezen_casusdata():
         
     ## GET
 
-    return render_template("/inlezen-casusdata.html", form=form, is_verwerkt=is_verwerkt, aantallen=aantallen, laatst_verwerkt_dat=laatst_verwerkt_dat)
+    return render_template("/inlezen-casusdata.html", form=form, is_verwerkt=is_verwerkt, aantallen=aantallen, \
+        laatst_verwerkt_dat=laatst_verwerkt_dat, \
+        tot_prov=tot_prov )

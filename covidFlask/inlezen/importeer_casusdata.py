@@ -29,11 +29,15 @@ CSV formaat:
 lg = {"0-9": 9, "10-19": 19, "20-29": 29, "30-39": 39, "40-49": 49, "50-59": 59, "60-69": 69, "70-79": 79, "80-89": 89, "90+": 999}
 
 def verwerk_casusdata(csv_file, last_date, dry_run):
+    print(f"PARAMETERS: {csv_file, last_date, dry_run}")
     totalen     = defaultdict(int)
-    last_date   = datetime.strptime(last_date, "%Y-%m-%d")
+    tot_prov    = defaultdict(lambda:defaultdict(int))
+    # last_date   = datetime.strptime(last_date, "%Y-%m-%d")
+    last_date   = datetime.strptime("2021-03-22", "%Y-%m-%d")
     max_date    = last_date
     fout        = False
     csv_to_save = app.root_path + app.config["UPLOAD_FOLDER"] + csv_file
+    print(f"CSV_SAVE: {csv_to_save}")
 
     with open(csv_to_save, "r") as txt_file:
         regels = csv.DictReader(txt_file, delimiter=";")
@@ -61,11 +65,23 @@ def verwerk_casusdata(csv_file, last_date, dry_run):
                         # }
                     # )
 
+                # print(f"REGEL: {regel}")
                 max_date                      = pub_date
                 totalen[ "verwerkt" ]        += 1
+                # tot_prov["Province"]         += 1
+                tot_prov[ regel["Agegroup"] ][ regel["Province"] ] += 1
+                
                 totalen[ regel["Agegroup"] ] += 1
                 totalen[ regel["Province"] ] += 1
                 totalen[ "Z"+regel["Hospital_admission"] ] += 1
                 totalen[ "D"+regel["Deceased"] ] += 1
 
-    return totalen, max_date, fout
+        print(f"\nTOTALEN PROV:\n")
+        tot_prov = dict(sorted(tot_prov.items(), key=lambda item: item[0]))
+        for leeftijd_groep, provincie_dict in tot_prov.items():
+            print(f"\t{leeftijd_groep}:")
+            provincie_dict = dict(sorted(provincie_dict.items(), key=lambda item: item[0]))
+            for provincie, aantal in provincie_dict.items():
+                print(f"\t\t{provincie} - {aantal}")
+
+    return tot_prov, totalen, max_date, fout

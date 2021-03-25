@@ -52,11 +52,49 @@
             <div class="col-2">
                 Aantallen
             </div>
+
             <div class="col-10">
-                {% for key, aantal in aantallen.items() %}
-                    {{ key }} - {{ aantal }}
+                {% for leeftijd_groep, provincie_dict in tot_prov.items() %}
+                    <p><b>{{ leeftijd_groep }}</b></p>
+                    <p>Drenthe: <i>{{provincie_dict["Drenthe"]}}</i></p>
+                    <p>Flevoland: <i>{{provincie_dict["Flevoland"]}}</i></p>
+                    <p>Fryslân: <i>{{provincie_dict["Fryslân"]}}</i></p>
+                    <p>Gelderland: <i>{{provincie_dict["Gelderland"]}}</i></p>
+                    <p>Groningen: <i>{{provincie_dict["Groningen"]}}</i></p>
+                    <p>Limburg: <i>{{provincie_dict["Limburg"]}}</i></p>
+                    <p>Noord-Brabant: <i>{{provincie_dict["Noord-Brabant"]}}</i></p>
+                    <p>Noord-Holland: <i>{{provincie_dict["Noord-Holland"]}}</i></p>
+                    <p>Overijssel: <i>{{provincie_dict["Overijssel"]}}</i></p>
+                    <p>Utrecht: <i>{{provincie_dict["Utrecht"]}}</i></p>
+                    <p>Zeeland: <i>{{provincie_dict["Zeeland"]}}</i></p>
+                    <p>Zuid-Holland: <i>{{provincie_dict["Zuid-Holland"]}}</i></p>
                 {% endfor %}
             </div>
+            <table>
+                <tr>
+                    <td>Provincie</td><td>0-9</td><td>10-19</td><td>20-29</td><td>30-39</td><td>40-49</td><td>50-59</td><td>60-69</td><td>70-79</td><td>80-89</td><td>90+</td>
+                </tr>
+                <tr>
+                    <td>Drenthe</td>
+                    <td>{{tot_prov["0-9"]["Drenthe"]}}</td>
+                    <td>{{tot_prov["10-19"]["Drenthe"]}}</td>
+                    <td>{{tot_prov["20-29"]["Drenthe"]}}</td>
+                    <td>{{tot_prov["30-39"]["Drenthe"]}}</td>
+                    <td>{{tot_prov["40-49"]["Drenthe"]}}</td>
+                    <td>{{tot_prov["50-59"]["Drenthe"]}}</td>
+                    <td>{{tot_prov["60-69"]["Drenthe"]}}</td>
+                    <td>{{tot_prov["70-79"]["Drenthe"]}}</td>
+                    <td>{{tot_prov["80-89"]["Drenthe"]}}</td>
+                    <td>{{tot_prov["90+"]["Drenthe"]}}</td>
+                </tr>
+            </table>
+
+            <!-- <div class="col-10"> -->
+                <!-- {% for key, aantal in aantallen.items() %} -->
+                    <!-- <p>{{ key }} - {{ aantal }}</p> -->
+                <!-- {% endfor %} -->
+            <!-- </div> -->
+
         </div>
     {% endif %}
 
