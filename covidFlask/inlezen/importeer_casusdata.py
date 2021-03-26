@@ -33,7 +33,7 @@ def verwerk_casusdata(csv_file, last_date, dry_run):
     totalen     = defaultdict(int)
     tot_prov    = defaultdict(lambda:defaultdict(int))
     # last_date   = datetime.strptime(last_date, "%Y-%m-%d")
-    last_date   = datetime.strptime("2021-03-22", "%Y-%m-%d")
+    last_date   = datetime.strptime("2021-03-21", "%Y-%m-%d")
     max_date    = last_date
     fout        = False
     csv_to_save = app.root_path + app.config["UPLOAD_FOLDER"] + csv_file
@@ -50,20 +50,20 @@ def verwerk_casusdata(csv_file, last_date, dry_run):
             if pub_date > last_date:          # Alleen records verwerken met een stat_dat > laatste verwerkingsdatum
                 
                 if not dry_run:
-                    print(f"VOOR HET ECHIE....")
-                    # covid_casus.insert_one(
-                        # { "datum"        : rep_date,
-                        #   "publicatie"   : pub_date,
-                        #   "stat_type"    : regel["Date_statistics_type"],
-                        #   "leeftijd_grp" : regel["Agegroup"],
-                        #   "geslacht"     : regel["Sex"],
-                        #   "provincie"    : regel["Province"],
-                        #   "ziekenhuis"   : regel["Hospital_admission"],
-                        #   "overleden"    : regel["Deceased"],
-                        #   "week_van_overlijden" : regel["Week_of_death"],
-                        #   "gem_service"  : regel["Municipal_health_service"],
-                        # }
-                    # )
+                    # print(f"VOOR HET ECHIE....")
+                    covid_casus.insert_one(
+                        { "datum"        : rep_date,
+                          "publicatie"   : pub_date,
+                          "stat_type"    : regel["Date_statistics_type"],
+                          "leeftijd_grp" : regel["Agegroup"],
+                          "geslacht"     : regel["Sex"],
+                          "provincie"    : regel["Province"],
+                          "ziekenhuis"   : regel["Hospital_admission"],
+                          "overleden"    : regel["Deceased"],
+                          "week_van_overlijden" : regel["Week_of_death"],
+                          "gem_service"  : regel["Municipal_health_service"],
+                        }
+                    )
 
                 # print(f"REGEL: {regel}")
                 max_date                      = pub_date
@@ -75,13 +75,5 @@ def verwerk_casusdata(csv_file, last_date, dry_run):
                 totalen[ regel["Province"] ] += 1
                 totalen[ "Z"+regel["Hospital_admission"] ] += 1
                 totalen[ "D"+regel["Deceased"] ] += 1
-
-        print(f"\nTOTALEN PROV:\n")
-        tot_prov = dict(sorted(tot_prov.items(), key=lambda item: item[0]))
-        for leeftijd_groep, provincie_dict in tot_prov.items():
-            print(f"\t{leeftijd_groep}:")
-            provincie_dict = dict(sorted(provincie_dict.items(), key=lambda item: item[0]))
-            for provincie, aantal in provincie_dict.items():
-                print(f"\t\t{provincie} - {aantal}")
 
     return tot_prov, totalen, max_date, fout

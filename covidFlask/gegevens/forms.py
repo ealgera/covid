@@ -20,3 +20,12 @@ class RegioForm(FlaskForm):
     dat_tm    = DateField("Tot en Met", format="%Y-%m-%d")
 
     submit    = SubmitField('Laat gegevens zien')
+
+class CasusForm(FlaskForm):
+    # keuzes    = RadioField("Keuze", choices=[('provincie','Provincie'),('gemeente','Gemeente')])
+    prov_sel  = SelectField("Provincie")
+    dat_vanaf = DateField("Vanaf", format="%Y-%m-%d")
+    dat_tm    = DateField("Tot en Met", format="%Y-%m-%d")
+    # gemniveau = BooleanField(label="Per Gemeente?")
+
+    submit    = SubmitField('Laat gegevens zien')

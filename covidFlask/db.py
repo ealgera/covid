@@ -75,3 +75,22 @@ def per_regio(regio, dat_van, dat_tot):
     ]
 
     return pipeline
+
+def casus_per_provincie(provincie, dat_van, dat_tot):
+    # Aggregatie pipeline voor sommatie van getallen per leeftijdsgroep en per provincie
+    pipeline = [ 
+        {"$match": {
+            "provincie" : provincie,                             # Een enkele Provincie of een List van Provincies icm $in
+            "publicatie": { "$gte": dat_van, "$lte": dat_tot} }
+        },
+        {"$group": 
+            {
+            # "_id"   : {"groep": "$leeftijd_grp", "prov": "$provincie"},
+            "_id"   : {"prov": "$provincie", "groep": "$leeftijd_grp"},
+            "aantal": {"$sum": 1}
+            }
+        },
+        {"$sort": {"_id": 1} }
+    ]
+
+    return pipeline
