@@ -21,6 +21,8 @@ class DatGrafiekForm(FlaskForm):
     dat_tm    = DateField("Tot en Met", format="%Y-%m-%d")
     gemniveau = BooleanField(label="Per Gemeente?")
     pertijd   = RadioField("", choices=[ ("perdag","dag"), ("perweek","week"), ("permaand","maand") ], default='perweek' )
+    persoort  = RadioField("", choices=[ ("perbesmet","besmet"), ("peropname","opname"), ("peroverlijden","overlijden") ], 
+        default='perbesmet' )
 
     submit    = SubmitField('Laat gegevens zien')
 

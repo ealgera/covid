@@ -138,7 +138,9 @@ def gegevens_casuslandelijk():
         
         else:
             dat_van = datetime.combine(form.dat_vanaf.data, datetime.min.time()) # Date naar DateTime conversie
-            dat_tot = datetime.combine(form.dat_tm.data, datetime.min.time()) # Date naar DateTime conversie
+            dat_tot = datetime.combine(form.dat_tm.data, datetime.min.time())    # Date naar DateTime conversie
+            print(f"DAT_VAN: {dat_van}")
+            print(f"DAT_TOT: {dat_tot}")
             if form.prov_sel.data == "Alles":
                 prov_filter["$in"] = alle_provincies # List met alle Provincies
                 filter = casus_per_provincie(prov_filter, dat_van, dat_tot)
@@ -148,7 +150,6 @@ def gegevens_casuslandelijk():
             # print(f"\nFILTER: {filter}")
             locatie_getallen = covid_casus.aggregate(filter)
 
-            
             for item_dict in locatie_getallen:
                 all_prov_dict[ item_dict['_id']['prov'] ].append(item_dict['aantal'])
 

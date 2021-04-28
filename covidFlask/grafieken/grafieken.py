@@ -126,16 +126,27 @@ def datum_grafieken():
                 # filter = per_week("G", form.gem_sel.data, dat_van, dat_tot )
                 # print(f"FILTER = {filter}")
             # else:
-                print(f"GELIJK AAN 'ALLES'")
+                # print(f"GELIJK AAN 'ALLES'")
                 # flash("Kies één Gemeente...", category="error")
                 # redirect( url_for("grafieken_bp.datum_grafieken") )
             
+            print(f"FILTER: {filter}")
             locatie_getallen = covid_col.aggregate(filter)
  
             for item in locatie_getallen:
                 gevonden = True
                 labels.append(item["_id"])      # Weeknummers van het jaar
-                values.append(item["reported"]) # Gerapporteerd per week
+
+                if form.persoort.data == "perbesmet":
+                    values.append(item["reported"]) # Gerapporteerd per week
+                elif form.persoort.data == "peropname":
+                    values.append(item["opnames"]) # Opnames per week
+                else:
+                    values.append(item["overleden"]) # Opnames per week
+
+                # values.append(item["reported"]) # Gerapporteerd per week
+                # values.append(item["opnames"]) # Opnames per week
+                # values.append(item["overleden"]) # Opnames per week
 
     else:
         print(f"ERRORS: {form.errors}")

@@ -29,7 +29,8 @@ def inlezen_gemeentes():
             flash(melding, category="info")
 
         if not fout:
-            aantallen, laatst_verwerkt_dat = importeer_gemeentes.verwerk_gemeentes(csv_file, verwerkt_tot, dry_run=form.dry_run.data)
+            # aantallen, laatst_verwerkt_dat = importeer_gemeentes.verwerk_gemeentes(csv_file, verwerkt_tot, dry_run=form.dry_run.data)
+            aantallen, laatst_verwerkt_dat = importeer_gemeentes.verwerk_gemeentes_via_pandas(csv_file, verwerkt_tot, dry_run=form.dry_run.data)
             laatst_verwerkt_dat = datetime.strftime(laatst_verwerkt_dat, "%Y-%m-%d")
             is_verwerkt = True
             flash(f"[COVID] Aantal verwerkt: {aantallen['verwerkt']}", category="info")
@@ -92,15 +93,15 @@ def inlezen_casusdata():
     aantallen    = defaultdict(int)
     tot_prov     = defaultdict(lambda:defaultdict(int))
     form         = ImportGemeentenForm(dry_run=True)
-    verwerkt_tot = mytools.laatste_datum (collection="covid_casus")  #laatste_datum() in STR formaat
+    verwerkt_tot = mytools.laatste_datum (collection="covid_casus")  # Laatste_datum() in STR formaat
     form.laatst_verwerkt.data = verwerkt_tot
     totalen = {}
 
     if form.is_submitted():  # POST
-        # csv_file        = "COVID-19_casus_landelijk.csv"
-        csv_file        = "COVID-19_casus_landelijk_test.csv"
-        # meldingen, fout = mytools.haal_csv(csv_file)
-        meldingen = ""
+        csv_file        = "COVID-19_casus_landelijk.csv"
+        # csv_file        = "COVID-19_casus_landelijk_test.csv"
+        meldingen, fout = mytools.haal_csv(csv_file)
+        # meldingen = ""
         fout      = False
         for melding in meldingen:
             flash(melding, category="info")

@@ -2,6 +2,7 @@ from   .db    import covid_col, covid_test, covid_casus
 from   flask  import Blueprint
 from   flask  import current_app as app
 import requests
+import time
 
 mytools = Blueprint("mytools", __name__)
 
@@ -32,6 +33,9 @@ def haal_csv(csv_file):
     meldingen = []
     fout      = False
 
+    print(f"HALEN CSV...")
+    start_time= time.time()
+
     csv_to_save = app.root_path + app.config["UPLOAD_FOLDER"] + csv_file
     url         = app.config["RIVM_URL"] + csv_file
 
@@ -55,4 +59,5 @@ def haal_csv(csv_file):
     with open(csv_to_save, 'wb') as f:
         f.write(req.content)
     
+    print(f"HALEN CSV: {time.time()-start_time}")
     return meldingen, fout

@@ -64,6 +64,15 @@
             {% endfor %}
         </div>
 
+        <div class="form-check-inline row">
+            {% for subfield in form.persoort %}
+                <div class="col-3">
+                    {{ subfield (class_="form-check-input") }}
+                    {{ subfield.label (class_="form-check-label") }}
+                </div>
+            {% endfor %}
+        </div>
+
         <br><br>
         <div>
             {{ form.submit(class_="btn btn-primary") }}

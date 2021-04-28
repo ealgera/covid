@@ -32,8 +32,8 @@ def verwerk_casusdata(csv_file, last_date, dry_run):
     print(f"PARAMETERS: {csv_file, last_date, dry_run}")
     totalen     = defaultdict(int)
     tot_prov    = defaultdict(lambda:defaultdict(int))
-    # last_date   = datetime.strptime(last_date, "%Y-%m-%d")
-    last_date   = datetime.strptime("2021-03-21", "%Y-%m-%d")
+    last_date   = datetime.strptime(last_date, "%Y-%m-%d")
+    # last_date   = datetime.strptime("2021-03-21", "%Y-%m-%d")
     max_date    = last_date
     fout        = False
     csv_to_save = app.root_path + app.config["UPLOAD_FOLDER"] + csv_file
